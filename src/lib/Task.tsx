@@ -10,7 +10,9 @@ export default class Task {
     return this._text;
   }
 
-  constructor(id: number, text: string) {
+  public completed;
+
+  constructor(id: number, text: string, completed: boolean = false) {
     if (!Number.isInteger(id)) {
       throw new Error('Task id must be an integer.');
     }
@@ -21,5 +23,6 @@ export default class Task {
 
     this._id = id;
     this._text = text;
+    this.completed = completed;
   }
 }

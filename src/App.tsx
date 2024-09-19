@@ -40,6 +40,27 @@ const App = () => {
     }
   };
 
+  const setTaskStatus = (id: number, completed: boolean) => {
+    try {
+      const i = tasks.findIndex((x) => x.id === id);
+
+      if (i < 0) {
+        return;
+      }
+
+      const tasksCopy = [...tasks];
+      tasksCopy.splice(i, 1, new Task(tasks[i].id, tasks[i].text, completed));
+
+      setTasks(tasksCopy);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error(err);
+      }
+    }
+  };
+
   const changeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setCurrentTask(e.target.value);
   };
@@ -49,20 +70,56 @@ const App = () => {
 
     addTask(currentTask);
   };
+
+  const changeStatus = (e: ChangeEvent<HTMLInputElement>, id: number) => {
+    const status = tasks.find((x) => x.id === id)?.completed;
+
+    if (status !== undefined) {
+      setTaskStatus(id, !status);
+    }
+  };
+
   return (
     <div className='container'>
       <h1>Task planner</h1>
       <div className='my-2'>
         <AddTaskForm placeholder='Add task' onChange={changeInput} onSubmit={submitForm} />
       </div>
-      <div className='card'>
-        <ul className='list-group list-group-flush'>
-          {tasks.map((x) => (
-            <TaskCard key={x.id} onDelete={() => removeTask(x.id)}>
-              {x.text}
-            </TaskCard>
-          ))}
-        </ul>
+      <div className='d-flex flex-column gap-2'>
+        <div className='card'>
+          <h3 className='card-header'>Ongoing</h3>
+          <ul className='list-group list-group-flush'>
+            {tasks
+              .filter((x) => x.completed === false)
+              .map((x) => (
+                <TaskCard
+                  key={x.id}
+                  completed={x.completed}
+                  onStatusChange={(e: ChangeEvent<HTMLInputElement>) => changeStatus(e, x.id)}
+                  onDelete={() => removeTask(x.id)}
+                >
+                  {x.text}
+                </TaskCard>
+              ))}
+          </ul>
+        </div>
+        <div className='card'>
+          <h3 className='card-header'>Completed</h3>
+          <ul className='list-group list-group-flush'>
+            {tasks
+              .filter((x) => x.completed === true)
+              .map((x) => (
+                <TaskCard
+                  key={x.id}
+                  completed={x.completed}
+                  onStatusChange={(e: ChangeEvent<HTMLInputElement>) => changeStatus(e, x.id)}
+                  onDelete={() => removeTask(x.id)}
+                >
+                  {x.text}
+                </TaskCard>
+              ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
