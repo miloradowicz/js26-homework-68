@@ -1,35 +1,71 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, ChangeEvent, FormEvent } from 'react';
+import Task from './lib/Task';
+import AddTaskForm from './AddTaskForm/AddTaskForm';
+import TaskCard from './TaskCard/TaskCard';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const initialTasks = ['Learn HTML', 'Learn CSS', 'Learn JS', 'Learn Typescript', 'Learn React', '???', 'Profit'];
 
+const App = () => {
+  const [tasks, setTasks] = useState(initialTasks.map((x, i) => new Task(i, x)));
+  const [currentId, setCurrentId] = useState(Math.max(...tasks.map((x) => x.id)) + 1);
+  const [currentTask, setCurrentTask] = useState('');
+
+  const addTask = (text: string) => {
+    try {
+      const newTask = new Task(currentId, text);
+
+      setTasks([...tasks, newTask]);
+      setCurrentId(currentId + 1);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error(err);
+      }
+    }
+  };
+
+  const removeTask = (id: number) => {
+    try {
+      setTasks(tasks.filter((x) => x.id !== id));
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error(err);
+      }
+    }
+  };
+
+  const changeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrentTask(e.target.value);
+  };
+
+  const submitForm = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    addTask(currentTask);
+  };
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='container'>
+      <h1>Task planner</h1>
+      <div className='my-2'>
+        <AddTaskForm placeholder='Add task' onChange={changeInput} onSubmit={submitForm} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div className='card'>
+        <ul className='list-group list-group-flush'>
+          {tasks.map((x) => (
+            <TaskCard key={x.id} onDelete={() => removeTask(x.id)}>
+              {x.text}
+            </TaskCard>
+          ))}
+        </ul>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default App
+export default App;
