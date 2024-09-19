@@ -2,7 +2,6 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import Task from './lib/Task';
 import AddTaskForm from './AddTaskForm/AddTaskForm';
 import TaskCard from './TaskCard/TaskCard';
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -21,7 +20,7 @@ const App = () => {
       setCurrentId(currentId + 1);
     } catch (err) {
       if (err instanceof Error) {
-        console.error(err.message);
+        alert(err.message);
       } else {
         console.error(err);
       }
@@ -33,7 +32,7 @@ const App = () => {
       setTasks(tasks.filter((x) => x.id !== id));
     } catch (err) {
       if (err instanceof Error) {
-        console.error(err.message);
+        alert(err.message);
       } else {
         console.error(err);
       }
