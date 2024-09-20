@@ -16,6 +16,8 @@ const TaskCard = ({ completed, onStatusChange, onDelete, children }: PropsWithCh
     id = randomInt(1000000);
   } while (ids.includes(id));
 
+  ids.push(id);
+
   return (
     <label htmlFor={`task-card-${id}`} className='task-item list-group-item d-flex align-items-center gap-1'>
       <input id={`task-card-${id}`} type='checkbox' checked={completed} onChange={onStatusChange} className='form-check-input' aria-label='Done' />
