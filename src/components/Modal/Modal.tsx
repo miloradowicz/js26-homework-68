@@ -1,11 +1,25 @@
-import { MouseEventHandler, PropsWithChildren } from 'react';
+import { AppDispatch, RootState } from '@/app/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeModal } from './modalSlice';
 
-interface ModalProps {
-  title: string;
-  onClose: MouseEventHandler;
-}
+const Modal = () => {
+  const title = useSelector((state: RootState) => state.modal.title);
+  const body = useSelector((state: RootState) => state.modal.body);
+  const onConfirm = useSelector((state: RootState) => state.modal.onConfirm);
 
-const Modal = ({ title, children, onClose }: PropsWithChildren<ModalProps>) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleClose = () => {
+    dispatch(closeModal());
+  };
+
+  const handleConfirm = async () => {
+    if (onConfirm) {
+      void (await onConfirm());
+      dispatch(closeModal());
+    }
+  };
+
   return (
     <>
       <div className='modal-backdrop show'></div>
@@ -18,15 +32,24 @@ const Modal = ({ title, children, onClose }: PropsWithChildren<ModalProps>) => {
                 type='button'
                 className='btn-close'
                 aria-label='Close'
-                onClick={onClose}
+                onClick={handleClose}
               ></button>
             </div>
-            <div className='modal-body'>{children}</div>
+            <div className='modal-body'>{body}</div>
             <div className='modal-footer'>
+              {!onConfirm ? null : (
+                <button
+                  type='button'
+                  className='btn btn-success'
+                  onClick={handleConfirm}
+                >
+                  Confirm
+                </button>
+              )}
               <button
                 type='button'
                 className='btn btn-danger'
-                onClick={onClose}
+                onClick={handleClose}
               >
                 Close
               </button>
