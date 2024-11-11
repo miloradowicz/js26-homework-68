@@ -3,6 +3,7 @@ import './TaskCard.css';
 import { deleteTask, getTasks, updateTask } from '@/containers/Todo/todoSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/app/store';
+import { showModal } from '@/components/Modal/modalSlice';
 
 interface Props {
   id: string;
@@ -28,6 +29,16 @@ const TaskCard: FC<Props> = ({ id }) => {
   };
 
   const handleDelete: MouseEventHandler = async () => {
+    dispatch(
+      showModal({
+        title: 'Delete task',
+        body: 'Are you sure you want to delete the task?',
+        onConfirm: actuallyDelete,
+      })
+    );
+  };
+
+  const actuallyDelete = async () => {
     await dispatch(deleteTask(id));
     await dispatch(getTasks());
   };
