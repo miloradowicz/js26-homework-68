@@ -25,6 +25,7 @@ const TaskForm = () => {
     if (data.text) {
       await dispatch(addTask({ ...data, completed: false }));
       await dispatch(getTasks());
+      setData({ text: '' });
     } else {
       setShowModal(true);
     }
@@ -40,6 +41,7 @@ const TaskForm = () => {
             placeholder='Add task'
             onChange={handleChange}
             className='form-control'
+            value={data.text}
           />
           <button
             type='submit'
