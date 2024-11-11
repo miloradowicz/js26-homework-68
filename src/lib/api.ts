@@ -1,7 +1,7 @@
-import axios from 'axios';
-
-import { Identifiable, Task, TaskBody } from '@/types';
+import { Task, TaskBody } from '@/types';
 import { HttpError } from './errors/HttpError';
+
+import axios from 'axios';
 
 interface ApiId {
   get name(): string;
@@ -34,7 +34,7 @@ const getTasks = async (): Promise<Task[]> => {
   );
 };
 
-const addTask = async (task: TaskBody): Promise<Identifiable> => {
+const addTask = async (task: TaskBody): Promise<Task> => {
   const endpoint = 'tasks.json';
 
   const { data, status, statusText } = await axios.post<ApiId>(
@@ -79,7 +79,7 @@ const updateTask = async (id: string, task: TaskBody): Promise<Task> => {
 };
 
 const deleteTask = async (id: string): Promise<void> => {
-  const endpoint = `meals/${id}.json`;
+  const endpoint = `tasks/${id}.json`;
 
   const { status, statusText } = await axios.delete(
     new URL(endpoint, baseUrl).href
