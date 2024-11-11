@@ -1,9 +1,9 @@
 import { AppDispatch } from '@/app/store';
 import { addTask, getTasks } from '@/containers/Todo/todoSlice';
-import Modal from '@/components/Modal/Modal';
 
 import { ChangeEventHandler, FormEventHandler, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { showModal } from '../Modal/modalSlice';
 
 interface FormData {
   text: string;
@@ -11,7 +11,6 @@ interface FormData {
 
 const TaskForm = () => {
   const [data, setData] = useState<FormData>({ text: '' });
-  const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -27,7 +26,12 @@ const TaskForm = () => {
       await dispatch(getTasks());
       setData({ text: '' });
     } else {
-      setShowModal(true);
+      dispatch(
+        showModal({
+          title: 'Enter the task name',
+          body: 'Task name cannot be empty.',
+        })
+      );
     }
   };
 
@@ -52,16 +56,6 @@ const TaskForm = () => {
           </button>
         </div>
       </form>
-      {!showModal ? null : (
-        <Modal
-          title='Enter the task name'
-          onClose={() => {
-            setShowModal(false);
-          }}
-        >
-          Task name cannot be empty.
-        </Modal>
-      )}
     </>
   );
 };

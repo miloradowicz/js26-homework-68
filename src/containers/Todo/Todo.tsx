@@ -5,10 +5,12 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTasks } from './todoSlice';
 import Loader from '@/components/Loader/Loader';
+import Modal from '@/components/Modal/Modal';
 
 const Todo = () => {
   const tasks = useSelector((state: RootState) => state.todo.tasks);
   const loading = useSelector((state: RootState) => state.todo.loading);
+  const showModal = useSelector((state: RootState) => state.modal.show);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -36,6 +38,7 @@ const Todo = () => {
           </div>
         </div>
       </div>
+      {!showModal ? null : <Modal />}
       {!loading ? null : <Loader />}
     </>
   );
